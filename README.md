@@ -4,4 +4,4 @@ Este repositório foi criado para um Trabalho de Faculdade onde devo criar um jo
 
 # Memory game College Work
 
-This repository was created for a college work where I need to develop a memory game with Allegro library
+This repository was created for a college work in which I need to develop a memory game with the Allegro library
