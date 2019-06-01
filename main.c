@@ -21,9 +21,10 @@ int main(int argc, char *argv[]){
     ALLEGRO_EVENT event;
     ALLEGRO_BITMAP **vetorDeSprites;
     ALLEGRO_TIMER *timer = NULL;
+    ALLEGRO_EVENT_QUEUE *timerQueue;
 
 
-    if(!inicializar(&janela, &timer, &font, &eventQueue, &musicaMenu, &score)){
+    if(!inicializar(&janela, &timer, &font, &eventQueue, &musicaMenu, &score, &timerQueue)){
         fprintf(stderr, "Falha ao inicializar a Allegro 5\n");
         return -1;
     }
@@ -46,20 +47,20 @@ int main(int argc, char *argv[]){
             option=telaInicial(font, &eventQueue, &event);
             if(option==-1){
                 fprintf(stderr, "Falha ao criar o menu inicial.\n");
-                finalizar(&janela,&font,&eventQueue,&musicaMenu);
+                //finalizar(&janela,&font,&eventQueue,&musicaMenu);
                 return -1;
             }
         }else if(option==2){
-            option=telaJogo(vetorDeSprites, font, &eventQueue, &event, &score);
+            option=telaJogo(vetorDeSprites, font, &eventQueue, &event, &score, &timerQueue);
             if(option==-1){
                 fprintf(stderr, "Falha ao criar tela de jogo.\n");
-                finalizar(&janela,&font,&eventQueue, &musicaMenu);
+                //finalizar(&janela,&font,&eventQueue, &musicaMenu);
                 return -1;
             }
         }   
     }
     
-    finalizar(&janela,&font,&eventQueue, &musicaMenu);
+    //finalizar(&janela,&font,&eventQueue, &musicaMenu);
 
     return 0;
 }

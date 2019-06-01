@@ -24,3 +24,15 @@ int intro(){
     free(logo);
     return 1;
 }
+
+/*
+    y
+    0
+x0      n
+    
+    n
+
+y=j
+x=i
+
+    */

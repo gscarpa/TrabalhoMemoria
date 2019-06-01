@@ -9,9 +9,9 @@
 #include <allegro5/allegro_audio.h>
 #include <allegro5/allegro_acodec.h>
 
-int inicializar(ALLEGRO_DISPLAY **janela,ALLEGRO_TIMER **timer, ALLEGRO_FONT **font, ALLEGRO_EVENT_QUEUE **eventQueue, ALLEGRO_AUDIO_STREAM **musicaMenu, ALLEGRO_SAMPLE **score);
+int inicializar(ALLEGRO_DISPLAY **janela,ALLEGRO_TIMER **timer, ALLEGRO_FONT **font, ALLEGRO_EVENT_QUEUE **eventQueue, ALLEGRO_AUDIO_STREAM **musicaMenu, ALLEGRO_SAMPLE **score, ALLEGRO_EVENT_QUEUE **timerQueue);
 ALLEGRO_BITMAP** alocarSprites();
 void carregarSprites(ALLEGRO_BITMAP **sprites);
-void finalizar();
+void finalizar(ALLEGRO_DISPLAY **janela, ALLEGRO_FONT **font, ALLEGRO_EVENT_QUEUE **eventQueue, ALLEGRO_AUDIO_STREAM **musicaMenu, ALLEGRO_EVENT_QUEUE **timerQueue);
 
 #endif
