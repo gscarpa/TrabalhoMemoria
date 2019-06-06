@@ -22,19 +22,17 @@ int main(int argc, char *argv[]){
     ALLEGRO_BITMAP **vetorDeSprites;
     ALLEGRO_TIMER *timer = NULL;
     ALLEGRO_EVENT_QUEUE *timerQueue;
+    int erros;
 
 
-    if(!inicializar(&janela, &timer, &font, &eventQueue, &musicaMenu, &score, &timerQueue)){
-        fprintf(stderr, "Falha ao inicializar a Allegro 5\n");
+    if(!inicializar(&janela, &timer, &font, &eventQueue, &musicaMenu, &score, &timerQueue, &vetorDeSprites)){
+        printf("Falha ao inicializar a Allegro 5\n");
         return -1;
     }
-    vetorDeSprites = alocarSprites();
-    carregarSprites(vetorDeSprites);
-    
 
     /*if(!intro()){
-        fprintf(stderr, "Falha na inicialização da logo.\n");
-        finalizar(&janela,&font,&eventQueue, &musicaMenu);
+        printf("Falha na inicialização da logo.\n");
+        finalizar(&janela, &font, &eventQueue, &musicaMenu, &timerQueue, &vetorDeSprites);
         return -1;
     }*/
 
@@ -46,21 +44,34 @@ int main(int argc, char *argv[]){
         if(option==1){
             option=telaInicial(font, &eventQueue, &event);
             if(option==-1){
-                fprintf(stderr, "Falha ao criar o menu inicial.\n");
-                //finalizar(&janela,&font,&eventQueue,&musicaMenu);
+                printf("Falha ao criar o menu inicial.\n");
+                finalizar(&janela, &font, &eventQueue, &musicaMenu, &timerQueue, &vetorDeSprites);
                 return -1;
             }
         }else if(option==2){
-            option=telaJogo(vetorDeSprites, font, &eventQueue, &event, &score, &timerQueue);
+            option=telaJogo(vetorDeSprites, font, &eventQueue, &event, &score, &timerQueue, &erros);
             if(option==-1){
-                fprintf(stderr, "Falha ao criar tela de jogo.\n");
-                //finalizar(&janela,&font,&eventQueue, &musicaMenu);
+                printf("Falha ao criar tela de jogo.\n");
+                finalizar(&janela, &font, &eventQueue, &musicaMenu, &timerQueue, &vetorDeSprites);
                 return -1;
             }
-        }   
+        }/*else if(option==3){
+            if(!telaHistorico()){
+                printf("Falha ao abrir histórico de pontuações");
+                finalizar(&janela, &font, &eventQueue, &musicaMenu, &timerQueue, &vetorDeSprites);
+                return -1;
+            }
+            option=1;
+        }else if(option==4){
+            if(!registrarPontuacao(&erros)){
+                printf("Falha ao registrar a pontuação do jogador");
+                finalizar(&janela, &font, &eventQueue, &musicaMenu, &timerQueue, &vetorDeSprites);
+                return -1;
+            }
+        }*/
     }
     
-    //finalizar(&janela,&font,&eventQueue, &musicaMenu);
+    finalizar(&janela, &font, &eventQueue, &musicaMenu, &timerQueue, &vetorDeSprites);
 
     return 0;
 }

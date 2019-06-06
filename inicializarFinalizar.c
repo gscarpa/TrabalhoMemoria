@@ -9,64 +9,64 @@
 #include <allegro5/allegro_audio.h>
 #include <allegro5/allegro_acodec.h>
 
-int inicializar(ALLEGRO_DISPLAY **janela, ALLEGRO_TIMER **timer, ALLEGRO_FONT **font, ALLEGRO_EVENT_QUEUE **eventQueue, ALLEGRO_AUDIO_STREAM **musicaMenu, ALLEGRO_SAMPLE **score, ALLEGRO_EVENT_QUEUE **timerQueue){
+int inicializar(ALLEGRO_DISPLAY **janela, ALLEGRO_TIMER **timer, ALLEGRO_FONT **font, ALLEGRO_EVENT_QUEUE **eventQueue, ALLEGRO_AUDIO_STREAM **musicaMenu, ALLEGRO_SAMPLE **score, ALLEGRO_EVENT_QUEUE **timerQueue, ALLEGRO_BITMAP ***vetorDeSprites){
     //inicia o allegro e verifica o sucesso
     if(!al_init()){
-        fprintf(stderr, "Falha ao iniciar allegro.\n");
+        printf("Falha ao iniciar allegro.\n");
         return 0;
     }
     //instala o teclado e verifica o sucesso
     if(!al_install_keyboard()){
-        fprintf(stderr, "Falha ao iniciar teclado.\n");
+        printf("Falha ao iniciar teclado.\n");
         return 0;
     }
     //instala o mouse e verifica o sucesso
     if(!al_install_mouse()){
-        fprintf(stderr, "Falha ao iniciar mouse.\n");
+        printf("Falha ao iniciar mouse.\n");
         al_uninstall_keyboard();
         return 0;
     }
     //inicia biblioteca de imagens e verifica o sucesso
     if(!al_init_image_addon()){
-        fprintf(stderr, "Falha ao iniciar biblioteca de imagens.\n");
+        printf("Falha ao iniciar biblioteca de imagens.\n");
         al_uninstall_keyboard();
         al_uninstall_mouse();
         return 0;
     }
     //inicia biblioteca de fontes e verifica o sucesso
     if(!al_init_font_addon()){        
-        fprintf(stderr, "Falha ao iniciar biblioteca de fontes.\n");
+        printf("Falha ao iniciar biblioteca de fontes.\n");
         al_uninstall_keyboard();
         al_uninstall_mouse();
         return 0;
     }
     //inicia biblioteca de ttf e verifica o sucesso
     if(!al_init_ttf_addon()){
-        fprintf(stderr, "Falha ao iniciar biblioteca ttf.\n");
+        printf("Falha ao iniciar biblioteca ttf.\n");
         al_uninstall_keyboard();
         al_uninstall_mouse();
         return 0;
     }
     //instala audio do sistema e verifica o sucesso 
     if(!al_install_audio()){
-        fprintf(stderr, "Falha ao installar audio.\n");
+        printf("Falha ao installar audio.\n");
         al_uninstall_keyboard();
         al_uninstall_mouse();
         return 0;
     }
     //inicia biblioteca de audio e verifica o sucesso
     if(!al_init_acodec_addon()){
-        fprintf(stderr, "Falha ao iniciar biblioteca de codecs de som.\n");
+        printf("Falha ao iniciar biblioteca de codecs de som.\n");
         al_uninstall_keyboard();
         al_uninstall_mouse();
         al_uninstall_audio();
         return 0;
     }
     //carrega fonte arial da pasta fonts
-    *font = al_load_font("fonts/arial.ttf", 30, 0);
+    *font = al_load_font("fonts/BlueHighwayPixie.ttf", 30, 0);
     //verifica se a fonte foi caregada com sucesso
     if(!*font){
-        fprintf(stderr, "Falha ao carregar fonte.\n");
+        printf("Falha ao carregar fonte.\n");
         al_uninstall_keyboard();
         al_uninstall_mouse();
         al_uninstall_audio();
@@ -76,7 +76,7 @@ int inicializar(ALLEGRO_DISPLAY **janela, ALLEGRO_TIMER **timer, ALLEGRO_FONT **
     *eventQueue = al_create_event_queue();
     //verifica se a filha de eventos foi criada com sucesso
     if(!*eventQueue){
-        fprintf(stderr, "Falha ao criar fila de eventos.\n");
+        printf("Falha ao criar fila de eventos.\n");
         al_uninstall_keyboard();
         al_uninstall_mouse();
         al_uninstall_audio();
@@ -85,7 +85,7 @@ int inicializar(ALLEGRO_DISPLAY **janela, ALLEGRO_TIMER **timer, ALLEGRO_FONT **
     }
     *timerQueue = al_create_event_queue();
     if(!*timerQueue){
-        fprintf(stderr, "Falha ao criar fila de eventos para animação das cartas.\n");
+        printf("Falha ao criar fila de eventos para animação das cartas.\n");
         al_uninstall_keyboard();
         al_uninstall_mouse();
         al_uninstall_audio();
@@ -97,7 +97,7 @@ int inicializar(ALLEGRO_DISPLAY **janela, ALLEGRO_TIMER **timer, ALLEGRO_FONT **
     *janela = al_create_display(800,600);
     //verifica se a janela foi criada com sucesso
     if(!janela){
-        fprintf(stderr, "Falha ao criar a janela.\n");
+        printf("Falha ao criar a janela.\n");
         al_uninstall_keyboard();
         al_uninstall_mouse();
         al_uninstall_audio();
@@ -108,7 +108,7 @@ int inicializar(ALLEGRO_DISPLAY **janela, ALLEGRO_TIMER **timer, ALLEGRO_FONT **
     }
     //reserva amostra de sons e verifica sucesso
     if(!al_reserve_samples(5)){
-        fprintf(stderr, "Falha ao reservar amostras de som.\n");
+        printf("Falha ao reservar amostras de som.\n");
         al_uninstall_keyboard();
         al_uninstall_mouse();
         al_uninstall_audio();
@@ -122,7 +122,7 @@ int inicializar(ALLEGRO_DISPLAY **janela, ALLEGRO_TIMER **timer, ALLEGRO_FONT **
     *musicaMenu=al_load_audio_stream("audios/menu.ogg", 4, 1024);
     //verifica se a música foi adicionada com sucesso
     if(!*musicaMenu){
-        fprintf(stderr, "Falha ao carregar música do menu.\n");
+        printf("Falha ao carregar música do menu.\n");
         al_uninstall_keyboard();
         al_uninstall_mouse();
         al_uninstall_audio();
@@ -136,7 +136,7 @@ int inicializar(ALLEGRO_DISPLAY **janela, ALLEGRO_TIMER **timer, ALLEGRO_FONT **
     }
     *score=al_load_sample("audios/score.ogg");
     if(!*score){
-        fprintf(stderr, "Falha ao carregar som de pontuação.\n");
+        printf("Falha ao carregar som de pontuação.\n");
         al_uninstall_keyboard();
         al_uninstall_mouse();
         al_uninstall_audio();
@@ -151,7 +151,7 @@ int inicializar(ALLEGRO_DISPLAY **janela, ALLEGRO_TIMER **timer, ALLEGRO_FONT **
     }
     *timer = al_create_timer(1/30.0);
     if(!timer){
-        fprintf(stderr, "Falha ao criar temporizador");
+        printf("Falha ao criar temporizador");
         al_uninstall_keyboard();
         al_uninstall_mouse();
         al_uninstall_audio();
@@ -172,101 +172,85 @@ int inicializar(ALLEGRO_DISPLAY **janela, ALLEGRO_TIMER **timer, ALLEGRO_FONT **
     al_register_event_source(*eventQueue, al_get_keyboard_event_source());
     al_register_event_source(*eventQueue, al_get_mouse_event_source());
     al_register_event_source(*timerQueue, al_get_timer_event_source(*timer));
+
     //inicia o timer
     al_start_timer(*timer);
-
+    //aloca vetor para sprites e backgrounds e cofere sucesso 
+    *vetorDeSprites=alocarSprites();
+    if(vetorDeSprites==NULL){
+        printf("Erro ao alocar vetor de sprites");
+        al_uninstall_keyboard();
+        al_uninstall_mouse();
+        al_uninstall_audio();
+        al_destroy_font(*font);
+        al_destroy_event_queue(*eventQueue);
+        al_destroy_event_queue(*timerQueue);
+        al_destroy_display(*janela);
+        al_destroy_mixer(al_get_default_mixer());
+        al_destroy_audio_stream(*musicaMenu);
+        al_destroy_sample(*score);
+        al_destroy_timer(*timer);
+        return -1;
+    }
+    //carrega sprites e background no vetor de sprites e confere sucesso
+    if(!carregarSprites(*vetorDeSprites)){
+        printf("Erro ao alocar vetor de sprites");
+        al_uninstall_keyboard();
+        al_uninstall_mouse();
+        al_uninstall_audio();
+        al_destroy_font(*font);
+        al_destroy_event_queue(*eventQueue);
+        al_destroy_event_queue(*timerQueue);
+        al_destroy_display(*janela);
+        al_destroy_mixer(al_get_default_mixer());
+        al_destroy_audio_stream(*musicaMenu);
+        al_destroy_sample(*score);
+        al_destroy_timer(*timer);
+        free(vetorDeSprites);
+    }
     return 1;
 }   
 
 ALLEGRO_BITMAP** alocarSprites(){
-    ALLEGRO_BITMAP **sprites = malloc(18*sizeof(ALLEGRO_BITMAP*));
+    ALLEGRO_BITMAP **sprites = malloc(19*sizeof(ALLEGRO_BITMAP*));
     if(sprites==NULL){
-        fprintf(stderr, "Erro ao alocar sprites\n");
+        printf("Erro ao alocar sprites\n");
         exit(-1);
     }
-    for(int i=0; i<18; i++){
+    for(int i=0; i<19; i++){
         sprites[i]=NULL;
     }
     return sprites;
 }
 
-void carregarSprites(ALLEGRO_BITMAP **sprites){
-    sprites[0] = al_load_bitmap("images/card1.png");
-    if(sprites[0]==NULL){
-        fprintf(stderr, "Erro ao carregar sprites.\n");
-        free(sprites);
-    }
+int carregarSprites(ALLEGRO_BITMAP **sprites){
+    sprites[0]=al_load_bitmap("images/card1.png");
     sprites[1]=al_load_bitmap("images/card2.png");
-    if(sprites[1]==NULL){
-        free(sprites);
-    }
     sprites[2]=al_load_bitmap("images/card3.png");
-    if(sprites[2]==NULL){
-        free(sprites);
-    }
     sprites[3]=al_load_bitmap("images/card4.png");
-    if(sprites[3]==NULL){
-        free(sprites);
-    }
     sprites[4]=al_load_bitmap("images/card5.png");
-    if(sprites[4]==NULL){
-        free(sprites);
-    }
     sprites[5]=al_load_bitmap("images/card6.png");
-    if(sprites[5]==NULL){
-        free(sprites);
-    }
     sprites[6]=al_load_bitmap("images/card7.png");
-    if(sprites[6]==NULL){
-        free(sprites);
-    }
     sprites[7]=al_load_bitmap("images/card8.png");
-    if(sprites[7]==NULL){
-        free(sprites);
-    }
     sprites[8]=al_load_bitmap("images/card9.png");
-    if(sprites[8]==NULL){
-        free(sprites);
-    }
     sprites[9]=al_load_bitmap("images/card10.png");
-    if(sprites[9]==NULL){
-        free(sprites);
-    }
     sprites[10]=al_load_bitmap("images/card11.png");
-    if(sprites[10]==NULL){
-        free(sprites);
-    }
     sprites[11]=al_load_bitmap("images/card12.png");
-    if(sprites[11]==NULL){
-        free(sprites);
-    }
     sprites[12]=al_load_bitmap("images/card13.png");
-    if(sprites[12]==NULL){
-        free(sprites);
-    }
     sprites[13]=al_load_bitmap("images/card14.png");
-    if(sprites[13]==NULL){
-        free(sprites);
-    }
     sprites[14]=al_load_bitmap("images/card15.png");
-    if(sprites[14]==NULL){
-        free(sprites);
-    }
     sprites[15]=al_load_bitmap("images/card16.png");
-    if(sprites[15]==NULL){
-        free(sprites);
-    }
     sprites[16]=al_load_bitmap("images/card17.png");
-    if(sprites[16]==NULL){
-        free(sprites);
-    }
     sprites[17]=al_load_bitmap("images/card18.png");
-    if(sprites[17]==NULL){
-        free(sprites);
+    sprites[18]=al_load_bitmap("images/gameBackground.png");
+    for(int i=0; i<19; i++){
+        if(sprites[i]==NULL)
+            return -1;
     }
+    return 1;
 }
 
-void finalizar(ALLEGRO_DISPLAY **janela, ALLEGRO_FONT **font, ALLEGRO_EVENT_QUEUE **eventQueue, ALLEGRO_AUDIO_STREAM **musicaMenu, ALLEGRO_EVENT_QUEUE **timerQueue){
+void finalizar(ALLEGRO_DISPLAY **janela, ALLEGRO_FONT **font, ALLEGRO_EVENT_QUEUE **eventQueue, ALLEGRO_AUDIO_STREAM **musicaMenu, ALLEGRO_EVENT_QUEUE **timerQueue, ALLEGRO_BITMAP ***vetorDeSprites){
     //desinstala e desaloca os itens inicializados pelo programada
     al_uninstall_keyboard();
     al_uninstall_mouse();
@@ -277,4 +261,5 @@ void finalizar(ALLEGRO_DISPLAY **janela, ALLEGRO_FONT **font, ALLEGRO_EVENT_QUEU
     al_destroy_display(*janela);
     al_destroy_mixer(al_get_default_mixer());
     al_destroy_audio_stream(*musicaMenu);
+    free(*vetorDeSprites);
 }
