@@ -12,6 +12,7 @@
 #include "headers/telaInicial.h"
 #include "headers/telaJogo.h"
 #include "headers/registrarPontuacao.h"
+#include "headers/telaHistorico.h"
 
 int main(int argc, char *argv[]){
     ALLEGRO_DISPLAY *janela = NULL;
@@ -32,11 +33,11 @@ int main(int argc, char *argv[]){
         return -1;
     }
 
-    /*if(!intro()){
+    if(!intro()){
         printf("Falha na inicialização da logo.\n");
-        finalizar(&janela, &font, &eventQueue, &musicaMenu, &timerQueue, &vetorDeSprites);
+        finalizar(&janela, &font, &eventQueue, &musicaMenu, &timerQueue, vetorDeSprites);
         return -1;
-    }*/
+    }
 
     int option=1; 
     al_attach_audio_stream_to_mixer(musicaMenu, al_get_default_mixer());
@@ -44,7 +45,7 @@ int main(int argc, char *argv[]){
 
     while(option!=0){
         if(option==1){
-            option=telaInicial(font, &eventQueue, &event);
+            option=telaInicial(vetorDeSprites, font, &eventQueue, &event);
             if(option==-1){
                 printf("Falha ao criar o menu inicial.\n");
                 finalizar(&janela, &font, &eventQueue, &musicaMenu, &timerQueue, vetorDeSprites);
@@ -57,15 +58,16 @@ int main(int argc, char *argv[]){
                 finalizar(&janela, &font, &eventQueue, &musicaMenu, &timerQueue, vetorDeSprites);
                 return -1;
             }
-        }/*else if(option==3){
-            if(!telaHistorico()){
+        }else if(option==3){
+            option=telaHistorico(vetorDeSprites, &eventQueue, &event, font);
+            if(option==-1){
                 printf("Falha ao abrir histórico de pontuações");
-                finalizar(&janela, &font, &eventQueue, &musicaMenu, &timerQueue, &vetorDeSprites, &score, &error);
+                finalizar(&janela, &font, &eventQueue, &musicaMenu, &timerQueue, vetorDeSprites);
                 return -1;
             }
-            option=1;
-        }*/else if(option==4){
-            if(!registrarPontuacao(erros, &eventQueue, &event, font)){
+        }else if(option==4){
+            option=registrarPontuacao(vetorDeSprites, erros, &eventQueue, &event, font);
+            if(option==-1){
                 printf("Falha ao registrar a pontuação do jogador");
                 finalizar(&janela, &font, &eventQueue, &musicaMenu, &timerQueue, vetorDeSprites);
                 return -1;

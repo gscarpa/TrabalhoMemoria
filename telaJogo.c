@@ -5,8 +5,11 @@
 #include <allegro5/allegro_image.h>
 #include <allegro5/allegro_audio.h>
 #include <allegro5/allegro_font.h>
-#include "headers/telaJogo.h"
 #include <allegro5/allegro_primitives.h>
+
+#include "headers/telaJogo.h"
+#include "headers/telaInicial.h"
+#include "headers/inicializarFinalizar.h"
 
 int telaJogo(ALLEGRO_BITMAP **sprites, ALLEGRO_FONT *font, ALLEGRO_EVENT_QUEUE **eventQueue, ALLEGRO_EVENT *event, ALLEGRO_SAMPLE **score, ALLEGRO_EVENT_QUEUE **timerQueue, int *erros, ALLEGRO_SAMPLE **error){
     srand(time(NULL));
@@ -17,6 +20,11 @@ int telaJogo(ALLEGRO_BITMAP **sprites, ALLEGRO_FONT *font, ALLEGRO_EVENT_QUEUE *
         fprintf(stderr, "Erro ao alocar matriz.\n");
         return -1;
     }
+
+
+    //ALLEGRO_BITMAP **vetorDeSprite;
+
+
 
     int acertos=0;
     *erros=0;
@@ -30,12 +38,12 @@ int telaJogo(ALLEGRO_BITMAP **sprites, ALLEGRO_FONT *font, ALLEGRO_EVENT_QUEUE *
         al_wait_for_event(*eventQueue, event);
         if(event->type==ALLEGRO_EVENT_MOUSE_BUTTON_DOWN){
             int coluna=event->mouse.x, linha=event->mouse.y; //[y][x]
-            printf("X:%d Y:%d\n", coluna, linha);
+//            printf("linha %d coluna%d", linha, coluna);
             if(linha>27 && linha<566 && coluna>27 && coluna<500){
                 coluna-=27;
                 coluna/=80;
                 linha-=27;
-                linha/=91;printf("[%d][%d]\n", linha, coluna);
+                linha/=91;
                 if(frames[linha][coluna]<9){
                     if(cardsPosIJ[0]<0){
                         cardsPosIJ[0]=linha;
@@ -62,6 +70,10 @@ int telaJogo(ALLEGRO_BITMAP **sprites, ALLEGRO_FONT *font, ALLEGRO_EVENT_QUEUE *
                 desaloca(matriz, 5);
                 desaloca(frames, 5);
                 return 0;
+            }else if(coluna>560 && coluna<768 && linha>500 && linha<534){
+                desaloca(matriz, 5);
+                desaloca(frames, 5);
+                return 1;
             }
         }else if(event->type == ALLEGRO_EVENT_DISPLAY_CLOSE){
             desaloca(matriz, 5);
@@ -69,6 +81,12 @@ int telaJogo(ALLEGRO_BITMAP **sprites, ALLEGRO_FONT *font, ALLEGRO_EVENT_QUEUE *
             return 0;
         }
     }
+    if(acertos==18){
+        al_draw_textf(font, al_map_rgb(255,0,255), 400, 250, ALLEGRO_ALIGN_CENTER, "PARABENS VOCÊ COMPLETOU O JOGO");
+        al_flip_display();
+        al_rest(3.0);
+    }
+
 
     desaloca(matriz, 5);
     desaloca(frames, 5);
@@ -77,16 +95,17 @@ int telaJogo(ALLEGRO_BITMAP **sprites, ALLEGRO_FONT *font, ALLEGRO_EVENT_QUEUE *
 }
 
 void updateGameScreen(ALLEGRO_BITMAP **sprites, int **frames, int **matriz, int *larguraSprite, int *alturaSprite, int *erros, int *acertos, ALLEGRO_FONT *font){
-    al_draw_bitmap(sprites[18], 0, 0, 0);
+    al_draw_bitmap(sprites[18], 0, 0, 1);
     for(int i=0; i<6; i++){
         for(int j=0; j<6; j++){
             al_draw_bitmap_region(sprites[(matriz[i][j]-1)],*larguraSprite*frames[i][j],0,*larguraSprite,*alturaSprite,27+j*(*larguraSprite), 27+i*(*alturaSprite),0);
         }
     }
-    al_draw_textf(font, al_map_rgb(0,0,0), 560, 40, ALLEGRO_ALIGN_LEFT, "Tentativas: %d", *erros+*acertos);
-    al_draw_textf(font, al_map_rgb(0,0,0), 560, 90, ALLEGRO_ALIGN_LEFT, "Erros: %d", *erros);
-    al_draw_textf(font, al_map_rgb(0,0,0), 560, 140, ALLEGRO_ALIGN_LEFT, "Acertos: %d", *acertos);
-    al_draw_textf(font, al_map_rgb(0,0,0), 560, 540, ALLEGRO_ALIGN_LEFT, "Sair");
+    al_draw_textf(font, al_map_rgb(255,255,255), 560, 40, ALLEGRO_ALIGN_LEFT, "Tentativas: %d", *erros+*acertos);
+    al_draw_textf(font, al_map_rgb(255,255,255), 560, 90, ALLEGRO_ALIGN_LEFT, "Erros: %d", *erros);
+    al_draw_textf(font, al_map_rgb(255,255,255), 560, 140, ALLEGRO_ALIGN_LEFT, "Acertos: %d", *acertos);
+    al_draw_textf(font, al_map_rgb(255,255,255), 560, 540, ALLEGRO_ALIGN_LEFT, "Sair");
+    al_draw_textf(font, al_map_rgb(255,255,255), 560, 500, ALLEGRO_ALIGN_LEFT, "Voltar ao Menu");
     al_flip_display();
 }
 
@@ -96,16 +115,17 @@ void flipCard(ALLEGRO_BITMAP **sprites, int **frames, int **matriz, int linha, i
         frames[linha][coluna]++;
         al_wait_for_event(*timerQueue, event);
         if(event->type==ALLEGRO_EVENT_TIMER){
-            al_draw_bitmap(sprites[18], 0, 0, 0);
+            al_draw_bitmap(sprites[18], 0, 0, 1);
             for(int i=0; i<6; i++){ //i=linha
                 for(int j=0; j<6; j++){ //j=coluna
                     al_draw_bitmap_region(sprites[(matriz[i][j]-1)],*larguraSprite*frames[i][j],0,*larguraSprite,*alturaSprite,27+j*(*larguraSprite), 27+i*(*alturaSprite),0);
                 }
             }
-            al_draw_textf(font, al_map_rgb(0,0,0), 560, 40, ALLEGRO_ALIGN_LEFT, "Tentativas: %d", *erros+*acertos);
-            al_draw_textf(font, al_map_rgb(0,0,0), 560, 90, ALLEGRO_ALIGN_LEFT, "Erros: %d", *erros);
-            al_draw_textf(font, al_map_rgb(0,0,0), 560, 140, ALLEGRO_ALIGN_LEFT, "Acertos: %d", *acertos);
-            al_draw_textf(font, al_map_rgb(0,0,0), 560, 540, ALLEGRO_ALIGN_LEFT, "Sair");
+            al_draw_textf(font, al_map_rgb(255,255,255), 560, 40, ALLEGRO_ALIGN_LEFT, "Tentativas: %d", *erros+*acertos);
+            al_draw_textf(font, al_map_rgb(255,255,255), 560, 90, ALLEGRO_ALIGN_LEFT, "Erros: %d", *erros);
+            al_draw_textf(font, al_map_rgb(255,255,255), 560, 140, ALLEGRO_ALIGN_LEFT, "Acertos: %d", *acertos);
+            al_draw_textf(font, al_map_rgb(255,255,255), 560, 540, ALLEGRO_ALIGN_LEFT, "Sair");
+            al_draw_textf(font, al_map_rgb(255,255,255), 560, 500, ALLEGRO_ALIGN_LEFT, "Voltar ao Menu");
             al_flip_display();
         }
     }
@@ -118,16 +138,17 @@ void flipBack(ALLEGRO_BITMAP **sprites, int **frames, int **matriz, int linha1, 
         frames[linha2][coluna2]--;
         al_wait_for_event(*timerQueue, event);
         if(event->type==ALLEGRO_EVENT_TIMER){
-            al_draw_bitmap(sprites[18], 0, 0, 0);
+            al_draw_bitmap(sprites[18], 0, 0, 1);
             for(int i=0; i<6; i++){ //i=linha
                 for(int j=0; j<6; j++){ //j=coluna
                     al_draw_bitmap_region(sprites[(matriz[i][j]-1)],*larguraSprite*frames[i][j],0,*larguraSprite,*alturaSprite,27+j*(*larguraSprite), 27+i*(*alturaSprite),0);
                 }
             }
-            al_draw_textf(font, al_map_rgb(0,0,0), 560, 40, ALLEGRO_ALIGN_LEFT, "Tentativas: %d", *erros+*acertos);
-            al_draw_textf(font, al_map_rgb(0,0,0), 560, 90, ALLEGRO_ALIGN_LEFT, "Erros: %d", *erros);
-            al_draw_textf(font, al_map_rgb(0,0,0), 560, 140, ALLEGRO_ALIGN_LEFT, "Acertos: %d", *acertos);
-            al_draw_textf(font, al_map_rgb(0,0,0), 560, 540, ALLEGRO_ALIGN_LEFT, "Sair");
+            al_draw_textf(font, al_map_rgb(255,255,255), 560, 40, ALLEGRO_ALIGN_LEFT, "Tentativas: %d", *erros+*acertos);
+            al_draw_textf(font, al_map_rgb(255,255,255), 560, 90, ALLEGRO_ALIGN_LEFT, "Erros: %d", *erros);
+            al_draw_textf(font, al_map_rgb(255,255,255), 560, 140, ALLEGRO_ALIGN_LEFT, "Acertos: %d", *acertos);
+            al_draw_textf(font, al_map_rgb(255,255,255), 560, 540, ALLEGRO_ALIGN_LEFT, "Sair");
+            al_draw_textf(font, al_map_rgb(255,255,255), 560, 500, ALLEGRO_ALIGN_LEFT, "Voltar ao Menu");
             al_flip_display();
         }
     }

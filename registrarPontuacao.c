@@ -6,20 +6,35 @@
 #include "headers/registrarPontuacao.h"
 #include "headers/jogador.h"
 
-int registrarPontuacao(int erros, ALLEGRO_EVENT_QUEUE **eventQueue, ALLEGRO_EVENT *event, ALLEGRO_FONT *font){
+int registrarPontuacao(ALLEGRO_BITMAP **sprites, int erros, ALLEGRO_EVENT_QUEUE **eventQueue, ALLEGRO_EVENT *event, ALLEGRO_FONT *font){
 	char nome[30], idade[4];
 	nome[0]='\0', idade[0]='\0';
 	int i=0, j=0, opcao=1;
-	while(opcao>0){
-		if(opcao==1)
-			opcao=inserirNome(eventQueue, event, font, &i, nome, idade);
-		else if(opcao==2)
-			opcao=inserirIdade(eventQueue, event, font, &j, nome, idade);
+	int pontuacao;
+	if(erros==0)
+		pontuacao=20000;
+	else
+		pontuacao=18000/erros;
+
+	while(opcao!=0){
+		switch(opcao){
+			case(1):
+				opcao=inserirNome(sprites, eventQueue, event, font, &i, nome, idade, pontuacao);
+				break;
+			case(2):
+				opcao=inserirIdade(sprites, eventQueue, event, font, &j, nome, idade, pontuacao);
+				break;
+			case(0):
+				opcao=0;
+				break;
+			default:
+				break;
+		}
 	}
-	
+	printf("oi");
 	jogador gravarJogador;
 
-	gravarJogador.pontuacao=((18.0 / erros)*1000);
+	gravarJogador.pontuacao=pontuacao;
 	if(nome[0]=='\0')
 		strcat(nome, "Jogador");
 	gravarJogador.tamanhoNome=strlen(nome)+1;
@@ -29,7 +44,6 @@ int registrarPontuacao(int erros, ALLEGRO_EVENT_QUEUE **eventQueue, ALLEGRO_EVEN
 		return -1;
 	}
 	strcpy(gravarJogador.nome, nome);
-	//printf("%d %d %d\n", ((int)idade[0]),((int)idade[1]),((int)idade[2]));
 	if(idade[0]>=48){
 		gravarJogador.idade=idade[0]-48;
 		if(idade[1]>=48){
@@ -37,7 +51,7 @@ int registrarPontuacao(int erros, ALLEGRO_EVENT_QUEUE **eventQueue, ALLEGRO_EVEN
 			if(idade[2]>=48)
 				gravarJogador.idade=(idade[0]-48)*100+(idade[1]-48)*10+idade[2]-48;
 		}
-	}else
+	}else if(idade[0]=='\0')
 		gravarJogador.idade=0;
 
 	FILE * fp;
@@ -90,38 +104,21 @@ int registrarPontuacao(int erros, ALLEGRO_EVENT_QUEUE **eventQueue, ALLEGRO_EVEN
 	    fwrite(&jogadores[i].idade,sizeof(int),1,fp);
 	    fwrite(&jogadores[i].pontuacao,sizeof(int),1,fp);
 	}
-
-
-    rewind(fp);
-    /*cont=0;
-    while(cont<10){
-    	short b, c;
-    	int a=-1;
-    	fread(&a,sizeof(int),1,fp);
-		if(a==-1)
-			break;
-		char nomin[a];
-		fread(nomin,sizeof(char),a,fp);
-	    fread(&b,sizeof(int),1,fp);
-	    fread(&c,sizeof(int),1,fp);
-   		printf("%s de %hd anos fez %hd pontuacao\n", nomin, b, c);
-   		cont++;
-    }*/
-
-
     if(fclose(fp))
    		printf("Ocorreu um erro ao fechar o arquivo.\n");
-
-	return 0;
+	return 3;
 }
 
-int inserirNome(ALLEGRO_EVENT_QUEUE **eventQueue, ALLEGRO_EVENT *event, ALLEGRO_FONT *font, int *i, char *nome, char *idade){
+int inserirNome(ALLEGRO_BITMAP **sprites, ALLEGRO_EVENT_QUEUE **eventQueue, ALLEGRO_EVENT *event, ALLEGRO_FONT *font, int *i, char *nome, char *idade, int pontuacao){
 	char inputChar;
 	while(1){
-		al_clear_to_color(al_map_rgb(255,255,255));
-		al_draw_textf(font, al_map_rgb(0,0,0), 50, 50, ALLEGRO_ALIGN_LEFT, "Nome: %s", nome);
-		al_draw_textf(font, al_map_rgb(0,0,0), 50, 100, ALLEGRO_ALIGN_LEFT, "Idade: %s", idade);
-		al_draw_textf(font, al_map_rgb(0,0,0), 20, 50, ALLEGRO_ALIGN_LEFT, "->");
+		al_draw_bitmap(sprites[18], 0, 0, 1);
+		al_draw_textf(font, al_map_rgb(0,0,0), 50, 200, ALLEGRO_ALIGN_LEFT, "Insira seus dados");
+		al_draw_textf(font, al_map_rgb(0,0,0), 50, 250, ALLEGRO_ALIGN_LEFT, "Nome: %s", nome);
+		al_draw_textf(font, al_map_rgb(0,0,0), 50, 300, ALLEGRO_ALIGN_LEFT, "Idade: %s", idade);
+		al_draw_textf(font, al_map_rgb(0,0,0), 50, 350, ALLEGRO_ALIGN_LEFT, "Pontuação: %d", pontuacao);
+		al_draw_textf(font, al_map_rgb(0,0,0), 20, 250, ALLEGRO_ALIGN_LEFT, "->");
+		al_draw_textf(font, al_map_rgb(255,255,255), 400, 550, ALLEGRO_ALIGN_CENTER, "Salvar");
 		al_flip_display();
 		al_wait_for_event(*eventQueue, event);
 		if(event->type==ALLEGRO_EVENT_KEY_CHAR){
@@ -137,17 +134,25 @@ int inserirNome(ALLEGRO_EVENT_QUEUE **eventQueue, ALLEGRO_EVENT *event, ALLEGRO_
 				nome[*i]='\0';
 			}else if(event->keyboard.keycode==ALLEGRO_KEY_ENTER)
 				break;
+		}else if(event->type==ALLEGRO_EVENT_MOUSE_BUTTON_DOWN){
+			if(event->mouse.x>=365 && event->mouse.x<=435 && event->mouse.y>=535 && event->mouse.y<=565)
+				return 0;
+			if(event->mouse.x>=50 && event->mouse.x<=700 && event->mouse.y>=300 && event->mouse.y<=330)
+				return 2;
 		}
 	}
 	return 2;
 }
-int inserirIdade(ALLEGRO_EVENT_QUEUE **eventQueue, ALLEGRO_EVENT *event, ALLEGRO_FONT *font, int *j, char *nome, char *idade){
+int inserirIdade(ALLEGRO_BITMAP **sprites, ALLEGRO_EVENT_QUEUE **eventQueue, ALLEGRO_EVENT *event, ALLEGRO_FONT *font, int *j, char *nome, char *idade, int pontuacao){
 	char inputChar;
 	while(1){
-		al_clear_to_color(al_map_rgb(255,255,255));
-		al_draw_textf(font, al_map_rgb(0,0,0), 50, 50, ALLEGRO_ALIGN_LEFT, "Nome: %s", nome);
-		al_draw_textf(font, al_map_rgb(0,0,0), 50, 100, ALLEGRO_ALIGN_LEFT, "Idade: %s", idade);
-		al_draw_textf(font, al_map_rgb(0,0,0), 20, 100, ALLEGRO_ALIGN_LEFT, "->");
+		al_draw_bitmap(sprites[18], 0, 0, 1);
+		al_draw_textf(font, al_map_rgb(0,0,0), 50, 200, ALLEGRO_ALIGN_LEFT, "Insira seus dados");
+		al_draw_textf(font, al_map_rgb(0,0,0), 50, 250, ALLEGRO_ALIGN_LEFT, "Nome: %s", nome);
+		al_draw_textf(font, al_map_rgb(0,0,0), 50, 300, ALLEGRO_ALIGN_LEFT, "Idade: %s", idade);
+		al_draw_textf(font, al_map_rgb(0,0,0), 50, 350, ALLEGRO_ALIGN_LEFT, "Pontuação: %d", pontuacao);
+		al_draw_textf(font, al_map_rgb(0,0,0), 20, 300, ALLEGRO_ALIGN_LEFT, "->");
+		al_draw_textf(font, al_map_rgb(255,255,255), 400, 550, ALLEGRO_ALIGN_CENTER, "Salvar");
 		al_flip_display();
 		al_wait_for_event(*eventQueue, event);
 		if(event->type==ALLEGRO_EVENT_KEY_CHAR){
@@ -159,15 +164,22 @@ int inserirIdade(ALLEGRO_EVENT_QUEUE **eventQueue, ALLEGRO_EVENT *event, ALLEGRO
 			}
 		}else if(event->type==ALLEGRO_EVENT_KEY_UP){
 			if(event->keyboard.keycode==ALLEGRO_KEY_BACKSPACE){
-				*j-=1;
-				idade[*j]='\0';
+				if(*j==2)
+					idade[*j]='\0';
+				else{
+					*j-=1;
+					idade[*j]='\0';
+				}
 			}else if(event->keyboard.keycode==ALLEGRO_KEY_ENTER)
 				break;
+		}else if(event->type==ALLEGRO_EVENT_MOUSE_BUTTON_DOWN){
+			if(event->mouse.x>=365 && event->mouse.x<=435 && event->mouse.y>=535 && event->mouse.y<=565)
+				break;
+			if(event->mouse.x>=50 && event->mouse.x<=700 && event->mouse.y>=250 && event->mouse.y<=280)
+				return 1;
 		}
 		if(*j>2)
 			*j=2;
-		
 	}
 	return 0;
-
 }

@@ -6,6 +6,6 @@
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_ttf.h>
 
-int telaInicial(/*ALLEGRO_KEYBOARD_STATE *keyState, */ALLEGRO_FONT *font, ALLEGRO_EVENT_QUEUE **eventQueue, ALLEGRO_EVENT *event);
+int telaInicial(/*ALLEGRO_KEYBOARD_STATE *keyState, */ALLEGRO_BITMAP **sprites, ALLEGRO_FONT *font, ALLEGRO_EVENT_QUEUE **eventQueue, ALLEGRO_EVENT *event);
 
 #endif

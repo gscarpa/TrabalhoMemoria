@@ -2,10 +2,10 @@
 #define JOGADOR_H
 
 typedef struct jogador{
+		int tamanhoNome;
    		char *nome;
    		int idade;
-   		int pontuacao;
-   		int tamanhoNome; 	
+   		int pontuacao;	
 }jogador;
 
 #endif

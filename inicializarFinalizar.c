@@ -231,12 +231,12 @@ int inicializar(ALLEGRO_DISPLAY **janela, ALLEGRO_TIMER **timer, ALLEGRO_FONT **
 }   
 //aloca o vetor de sprites
 ALLEGRO_BITMAP** alocarSprites(){
-    ALLEGRO_BITMAP **sprites = malloc(19*sizeof(ALLEGRO_BITMAP*));
+    ALLEGRO_BITMAP **sprites = malloc(20*sizeof(ALLEGRO_BITMAP*));
     if(sprites==NULL){
         printf("Erro ao alocar sprites\n");
         exit(-1);
     }
-    for(int i=0; i<19; i++){
+    for(int i=0; i<21; i++){
         sprites[i]=NULL;
     }
     return sprites;
@@ -249,9 +249,12 @@ int carregarSprites(ALLEGRO_BITMAP **sprites){
         sprites[i]=al_load_bitmap(carta);
     }
     sprites[18]=al_load_bitmap("images/gameBackground.png");
-    for(int i=0; i<19; i++){
+    sprites[19]=al_load_bitmap("images/menuBackground.png");
+    sprites[20]=al_load_bitmap("images/button.png");
+
+    for(int i=0; i<21; i++){
         if(sprites[i]==NULL){
-            for(int j=0; j<19; j++){
+            for(int j=0; j<21; j++){
                 if(sprites[j]!=NULL)
                     al_destroy_bitmap(sprites[j]);
             }
@@ -273,7 +276,7 @@ void finalizar(ALLEGRO_DISPLAY **janela, ALLEGRO_FONT **font, ALLEGRO_EVENT_QUEU
     al_destroy_display(*janela);
     al_destroy_mixer(al_get_default_mixer());
     al_destroy_audio_stream(*musicaMenu);
-    for(int i=0; i<19; i++){
+    for(int i=0; i<21; i++){
         al_destroy_bitmap(vetorDeSprites[i]);
     }
     free(vetorDeSprites);
